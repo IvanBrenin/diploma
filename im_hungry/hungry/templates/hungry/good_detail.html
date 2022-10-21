@@ -1,0 +1,62 @@
+{% extends 'hungry/base.html' %}
+{% load static %}
+
+{% block title %}{{ object }} in {{ object.place.name }}{% endblock %}
+
+    {% block content %}
+
+    <section class="main-section">
+
+        <div class="row justify-content-start my-3">
+                <h3 class="text-secondary m-3 col-4">{{ object.name }} in <a class="link" href="{% url 'hungry:place-detail' object.place.id %}">{{ object.place.name }}</a></h3>
+        </div>
+
+        <div class="row">
+            <div class="col-5" style="margin-left:25px;"><img src="{{ object.picture.url }}" class="w-75"></div>
+            <div class="col-6">
+                {% if object.description %}
+                    
+            <p class="text-secondary">{{ object.description.read.decode }}</p>
+            {% endif %} <br><br><br>
+                <hr>
+                <div class="col-9"><h5 class="text-start" style="display:inline-block;">Price: {{ object.price|floatformat:2 }}</h5><h5 class="text-end" style="display:inline-block; margin-left: 400px;">Rating: {{ object.rating|floatformat:1 }} (Rated: {{object.rated_by.all|length}})</h5></div>
+            
+                    
+                </div> 
+            </div>
+
+
+{% if user.is_authenticated %}  
+{% if user in object.rated_by.all %}
+<div class="row">
+    <div class="col-5">
+        <h5 class="m-4">Already Rated</h5>
+        <form action="{% url 'hungry:rate-good' good.id %}" method="POST" class="form-check">
+            {% csrf_token %}
+            <input type="submit" value="Change" class="btn btn-success">
+        </form>
+    </div>
+</div>
+{% else %}
+{% if user in object.place.visitors.all %}
+        <div class="row">
+                <div class="col-5">
+                    <h5 class="m-4">Rate Good:</h5>
+                    <form action="{% url 'hungry:rate-good' good.id %}" method="POST" class="form-check">
+                        {% csrf_token %}
+                        <label class="form-check-label">1<input type="radio" name="rate" class="form-check-input m-2" value="1"></label>
+                        <label class="form-check-label">2<input type="radio" name="rate" class="form-check-input m-2" value="2"></label>
+                        <label class="form-check-label">3<input type="radio" name="rate" class="form-check-input m-2" value="3"></label>
+                        <label class="form-check-label">4<input type="radio" name="rate" class="form-check-input m-2" value="4"></label>
+                        <label class="form-check-label">5<input type="radio" name="rate" class="form-check-input m-2" value="5"></label>
+                        <input type="submit" value="Rate" class="btn btn-success">
+                    </form>
+                </div>
+            </div>
+            {% endif %}
+            {% endif %}
+            {% endif %}
+
+        </div>
+    </section>
+    {% endblock %}

@@ -1,0 +1,97 @@
+{% extends 'hungry/base.html' %}
+{% load static %}
+
+{% block title %}{{ place.name }}{% endblock %}
+
+    {% block content %}
+
+    <section class="main-section">
+<div class="row">
+            <h3 class="text-secondary m-5 detail-header col-3">{{ place.name }}({{ place.category }}):</h3>         {% if user.is_authenticated %}
+            {% if user not in place.visitors.all %}
+        <div class="col-2">
+                    <a href="{% url 'hungry:visited' place.id %}" class="btn btn-outline-success" style='margin-top:40px;'>
+                         Visited
+                    </a>
+        </div>
+            {% else %}
+        <div class="col-2">
+                <a href="{% url 'hungry:visited' place.id %}" class="btn btn-outline-danger" style='margin-top:40px;'>
+                     Not Visited
+                </a>
+        </div>
+            {% endif %}
+            <div class="col-2" style="margin-top:40px;">
+                <p>Distance To : {{ distance }}</p>
+                <p>Time To : {{ time_to }}</p>
+            </div>
+            {% else %}
+            <div class="col-3"><p style='margin-top:40px;font-size:30px;'>{{ message }}</p></div>
+        {% endif %}
+</div>
+        <p class="ms-3">Manager: <a href="{% url 'hungry:user-detail' place.manager.id %}"><img src="{{ place.manager.addon.avatar.url }}" width="25">{{ place.manager }}</a></p>
+        <div class="row justify-content-center">
+            <div class="col-3 ms-0"><img src="{{ place.place_photo.url }}" class="img-fluid"></div>
+            <div class="mapouter2 col-9"><div class="gmap_canvas2"><iframe class="gmap_iframe2" width="1000px" height="550px" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://maps.google.com/maps?width=850&amp;height=550&amp;hl=en&amp;q={{ place.geolocation }}&amp;t=&amp;z=17&amp;ie=UTF8&amp;iwloc=B&amp;output=embed"></iframe></div></div>
+        </div>
+        <p class="text-secondary m-3">Visitors photos:</p>
+        {% for userphoto in place.userphotos.all %}
+            <a href="{% url 'hungry:userphotos' place.id %}" target="_blank" class="m-3"><img src="{{ userphoto.photo.url }}" width="75"></a>
+        {% endfor %}
+        {% if user in place.visitors.all %}
+        <div class="col-4 m-2">
+            <form action="{% url 'hungry:photo-add' place.id %}" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <label>Add your photo:  <input type="file" name="new_photo"></label>
+                <input type="submit" value="Add" class="btn btn-success">
+            </form>
+        </div>
+            {% endif %}
+    </section>
+
+
+
+
+    <div class="row">
+        <h4 class="text-secondary ms-3 mt-3">MENU:</h4>
+        <table width="250" class="col-4 ms-5">
+            <tr>
+                <th>Position</th>
+                <th>Price</th>
+                <th>Rating</th>
+            </tr>
+            {% for good in place.goods.all %}
+            <tr>
+                <td><a href="{% url 'hungry:good-detail' good.id %}" class="link menu-link">{{ good.name }}</a></td>
+                <td>{{ good.price|floatformat:2 }}<small> грн</small></td>
+                <td>{{ good.rating|floatformat:1 }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+            
+                <div class="col-4">
+                    <h5 class="text-secondary ms-3 mb-3">Comments:</h5>
+                    {% for comment in place.comments.all %}
+                        <p><a href="{% url 'hungry:user-detail' comment.author.id %}">{{ comment.author }}:</a><span class="text-success">{{ comment.text }}</span> ({{ comment.published|timesince }} ago)</p>
+                    {% endfor %}
+                </div>
+                <div class="col-3">
+                    {% if user in place.visitors.all %}
+                    <form action="{% url 'hungry:comment-add' place.id %}" method="POST">
+                        {% csrf_token %}
+                        <input type="text" name="text" placeholder="Leave Comment here" class="m-2">
+                        <input type="submit" value="Comment" class="btn btn-success m-2">
+                    </form>
+                    {% else %}
+                    <p>Visit this place to leave comment!</p>
+                    {% endif %}
+            </div>
+            </div>
+       <div class="col-4">
+        {% if place.manager == user %}
+        <a href="{% url 'hungry:menu-edit-page' place.id %}" class="btn btn-success m-2">Edit Menu</a>
+        {% endif %} <br><br><br>
+    </div>
+
+    <br><br><br>
+    {% endblock %}

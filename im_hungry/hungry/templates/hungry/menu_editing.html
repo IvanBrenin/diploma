@@ -1,0 +1,60 @@
+{% extends 'hungry/base.html' %}
+{% load static %}
+
+{% block title %}Management{% endblock %}
+
+    {% block content %}
+
+    {% if message %}
+
+    <div class="alert alert-success alert-dismissible fade show col-7" role="alert"> {{ message }}
+    </div>
+        
+    {% endif %}
+
+    {% if user.is_authenticated %}
+
+        <div class="row">
+            <h4 class="text-secondary ms-3 mt-3">MENU EDITING:</h4>
+            <p class="text-danger text-center">You can edit existing goods:</p>
+            <table width="250" class="col-8 ms-5" style="margin-top:50px;">
+                <tr>
+                    <th>Position</th>
+                    <th>Price</th>
+                    <th>Rating</th>
+                </tr>
+                {% for good in place.goods.all %}
+                <tr>
+                    <td><a href="{% url 'hungry:good-detail' good.id %}" class="link menu-link">{{ good.name }}</a></td>
+                    <td>{{ good.price|floatformat:2 }}<small> грн</small></td>
+                    <td>{{ good.rating|floatformat:1 }}</td>
+                    <td><form action="{% url 'hungry:menu-edit' place.id %}" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <input type="text" name="new_name" placeholder="New Name">
+                        <input type="text" name="new_price" placeholder="New Price">
+                        <label>New Pic: <input type="file" name="new_pic" value="New Pic"></label>
+                        <label>New Description: <input type="file" name="new_desc"></label>
+                        <input type="hidden" name="good_id" value="{{ good.id }}">
+                        <input type="submit" value="Go" class="btn btn-success">
+                    </form></td>
+                </tr>
+                {% endfor %}
+            </table>
+            </div>
+<br><br><br>
+            <div class="row">
+                <div class="col-5" style="margin-left:25px;">
+                    <p class="text-danger text-center">
+                        Or Add New:
+                    </p>
+                    <br>
+                    <form action="{% url 'hungry:menu-add' place.id %}" method="POST" enctype="multipart/form-data" class="p-20">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <input type="submit" value="Add" class="btn btn-success">
+                    </form>
+                </div>
+            </div>
+        {% endif %}
+        
+    {% endblock %}

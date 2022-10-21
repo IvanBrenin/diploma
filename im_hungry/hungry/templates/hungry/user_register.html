@@ -1,0 +1,43 @@
+{% extends 'hungry/base.html' %}
+{% load static %}
+
+{% block title %}User Registration{% endblock %}
+
+{% block content %}
+
+<div class="col">
+    <div class="col-3"><h3 class="m-5 page-title">User Registration</h3></div>
+</div>
+
+
+{% if message %}
+    <div class="alert alert-warning alert-dismissible fade show" role="alert"> {{ message }}
+    </div>
+{% endif %}
+
+<div class="container">
+    <form action="{% url 'hungry:register' %}" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        {{ form.as_p }}
+
+        <label class="m-3">
+            Your Address: <br> 
+            <input type="address" width="50px" name="address">
+        </label>
+        <br>
+    
+        <label class="m-3">
+            Add Your Avatar: <br> 
+            <input type="file" name="avatar">
+        </label>
+        <br><br>
+    
+        <input type="submit" class="btn submit-btn" value="Register">
+    
+    
+    </form>
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends 'hungry/base.html' %}
+{% load static %}
+{% block title %}
+Im Hungry - login
+{% endblock %}
+
+{% block content %}
+<h3 class="m-5 page-title">Authentification</h3>
+
+<div class="container">
+
+    {% if message %}
+    <div class="alert alert-warning alert-dismissible fade show" role="alert"> {{ message }}
+    </div>
+{% endif %}
+
+    <form action="{% url 'hungry:login-user' %}" method="POST">
+        {% csrf_token %}
+        <table class="text-secondary">
+            <tr>
+                <td>
+                    login:
+                </td>
+                <td>
+                    <input type="text" name="username">
+                </td>
+            </tr>
+            
+            <tr>
+                <td>
+                    password:
+                </td>
+                <td>
+                    <input type="password" name="password">
+                </td>
+            </tr>
+        </table>
+        <br><br><br>
+        <input type="submit" class="btn submit-btn" value="log in">
+        <input type="hidden" name="next_" value="{{ next_ }}">
+</div>
+
+</form>
+
+{% endblock %}

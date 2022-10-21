@@ -1,0 +1,39 @@
+{% extends 'hungry/base.html' %}
+{% load static %}
+
+{% block title %}{{ object }}{% endblock %}
+
+    {% block content %}
+<div class="row">
+<div class="col-4">
+    <h4 class="text-secondary text-center">{{ object }}</h4>
+            {% if object.addon.avatar %}
+            <img src="{{ object.addon.avatar.url }}" width=125px style="margin:25px;">
+            {% endif %}
+
+</div>
+</div>
+<div class="row">
+    <div class="col-5 ms-5">
+        <p class="text-start">Visited: {{ object.visited.all|length }}</p>
+        <p class="text-start">Manager Of:
+            {% for place in object.managed.all %}
+                <a href="{% url 'hungry:place-detail' place.id %}"> {{ place.name }}</a>
+            {% empty %}
+            <p class="text-start text-danger">This User not a manager of any place!</p>
+            {% endfor %}
+        </p>
+        <p class="text-start">Comments Left By User:
+            {{ object.comments.all|length }}
+        </p>
+    </div>
+    <br><br>
+    <div class="row">
+        <div class="col-3 ms-4 mt-4">
+            {% if object == user %}
+            <a href="{% url 'hungry:user-settings' %}" class="btn btn-success">Your Settings</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+    {% endblock %}

@@ -21,11 +21,20 @@ class CategoryAdmin(admin.ModelAdmin):
     pass
 
 
-# @admin.register(Price)
-# class PriceAdmin(admin.ModelAdmin):
-#     pass
+@admin.register(UserPhoto)
+class UserPhotoAdmin(admin.ModelAdmin):
+    pass
 
 
 @admin.register(UserAddon)
 class UserAddonAdmin(admin.ModelAdmin):
+    pass
+
+@admin.register(Rate)
+class RateAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(PlaceComment)
+class PlaceCommentAdmin(admin.ModelAdmin):
     pass

@@ -1,0 +1,54 @@
+{% extends 'hungry/base.html' %}
+{% load static %}
+
+{% block title %}{{ user }} Settings{% endblock %}
+
+    {% block content %}
+<div class="row">
+<div class="col-4">
+    <h4 class="text-secondary text-center">{{ user }}</h4>
+            {% if user.addon.avatar %}
+            <img src="{{ user.addon.avatar.url }}" width=125px style="margin:25px;">
+            {% endif %}
+
+</div>
+</div>
+<div class="row">
+    <div class="col-5 ms-5">
+        <p>You can change your address or avatar here:</p>
+        <br><br>
+        <form action="{% url 'hungry:user-apply' %}" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <label>New Avatar: <input type="file" name="avatar"></label> <br><br>
+            <label>New Address: <input type="text" name="address"></label><p>Current is: <i>{{ user.addon.address }}</i></p>
+<br><br>
+    <input type="submit" value="Save changes" class="btn btn-danger">
+        </form>
+    </div>
+    <br><br>
+</div>
+
+{% if not form %}
+<br>
+<div class="m-3">
+    <p>You can also:</p>
+        <form action="{% url 'hungry:registered' %}" method="post">
+            {% csrf_token %}
+        <input type="submit" class="btn submit-btn" value="Add New Place"></input>
+        </form>
+</div>
+{% endif %}
+
+
+{% if form %}
+    <br><br>
+<div class="container">
+<form action="{% url 'hungry:place-add' %}" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_table }} <br><br><br>
+    <input type="submit" class="btn submit-btn" value="Register">
+</form>
+
+</div>
+{% endif %}
+    {% endblock %}

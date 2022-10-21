@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>I'm Hungry React</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">
+      class PlaceCard extends React.Component {
+        render() {
+          return (
+            <div className="col-4 text-center">
+              <p className="text-warning">{this.props.place.category}</p>
+              <img src={this.props.place.place_photo} className="w-75 h-50" />
+              <p>{this.props.place.name}</p>
+            </div>
+          );
+        }
+      }
+
+      class GoodsList extends React.Component {
+        render() {
+          return <div></div>;
+        }
+      }
+
+      class MyApp extends React.Component {
+        constructor(props) {
+          super(props);
+          this.state = {
+            places: [],
+            goods: [],
+          };
+        }
+
+        takeAPIDataFromDjangoPlaces = async () => {
+          const placesURL = "http://127.0.0.1:8001/hungry/api/place/list/";
+          console.log("TAKE PLACES FROM DJANGO");
+          const apiUrl = await fetch(placesURL, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*",
+            },
+          });
+          const data = await apiUrl.json();
+          console.log(data);
+          this.setState({
+            places: data,
+          });
+        };
+
+        takeAPIDataFromDjangoGoods = async () => {
+          const goodsURL = "http://127.0.0.1:8001/hungry/api/good/list/";
+          console.log("TAKE GOODS FROM DJANGO");
+          const apiUrl = await fetch(goodsURL, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*",
+            },
+          });
+          const data = await apiUrl.json();
+          console.log(data);
+          this.setState({
+            goods: data,
+          });
+        };
+
+        getPlaceCards = () => {
+          return this.state.places.map((place, idx) => (
+            <PlaceCard place={place} key={idx} />
+          ));
+        };
+
+        // getMenu = (idx) => {
+        //   let goods = [];
+        //   for (let good of this.state.goods) {
+        //     good.place == idx : goods.push(good)
+        //   }
+        // }
+
+        componentDidMount() {
+          console.log("componentDidMount");
+          this.takeAPIDataFromDjangoPlaces();
+          this.takeAPIDataFromDjangoGoods();
+        }
+
+        render() {
+          return (
+            <div className="container">
+              <div className="row">{this.getPlaceCards()}</div>
+            </div>
+          );
+        }
+      }
+
+      const container = document.getElementById("root");
+      const root = ReactDOM.createRoot(container);
+      root.render(<MyApp />);
+    </script>
+  </body>
+</html>
