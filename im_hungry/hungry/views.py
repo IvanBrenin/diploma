@@ -173,7 +173,7 @@ def filter(request):
         place_list = Place.objects.filter(name__icontains=match)
         context = {
             'place_list': place_list,
-             'michelin': {'stars': Place.michelin(), '66percent': (Place.michelin() / 3) * 2, '33percent': Place.michelin() / 3},
+            'michelin': {'stars': Place.michelin(), '66percent': (Place.michelin() / 3) * 2, '33percent': Place.michelin() / 3},
         }
         return render(request, template_name='hungry/search.html', context=context)
 

@@ -9,6 +9,7 @@ import json
 
 GOOGLE_MAPS_API_KEY = 'AIzaSyCg-7rAL8j2eYd7NYQelNpdMR-mw0hoOZ0'
 
+
 class Category(models.Model):
     name = models.CharField(max_length=128)
     cat_pic = models.ImageField(upload_to='categorypics/', null=True, blank=True)
@@ -85,7 +86,6 @@ class Good(models.Model):
     rated_by = models.ManyToManyField(User, related_name='rated', blank=True)
     # ratings
 
-
     def __str__(self):
         return f'{self.place.name}: {self.cls} - {self.name}'
 
@@ -97,7 +97,6 @@ class Good(models.Model):
         if ratings:
             return sum(r.amount for r in ratings) / len(ratings)
         return 0.0
-
 
 
 class UserAddon(models.Model):
